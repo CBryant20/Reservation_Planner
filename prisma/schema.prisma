@@ -9,3 +9,27 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model Customer {
+  id    Int    @id @default(autoincrement())
+  name  String 
+  reservations Reservation[]
+}
+
+model Restaurant {
+  id    Int     @id @default(autoincrement())
+  name  String
+  reservations Reservation[]
+}
+
+model Reservation {
+  id             Int         @id @default(autoincrement())
+  date           DateTime    @default(now())
+  party_count    Int
+  restaurant_id  Int
+  customer_id    Int
+  restaurant    Restaurant  @relation(fields: [restaurant_id], references: [id])
+  customer      Customer    @relation(fields: [customer_id], references: [id])
+
+  @@unique([restaurant_id, customer_id, date])
+}
